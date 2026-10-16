@@ -1,0 +1,21 @@
+{
+  "name": "aykas-cep-hesap",
+  "version": "1.0.0",
+  "description": "AYKAS CEP HESAP Masaüstü Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0"
+  },
+  "build": {
+    "appId": "com.aykas.cephesap",
+    "productName": "AYKAS CEP HESAP",
+    "win": {
+      "target": "nsis"
+    }
+  }
+}

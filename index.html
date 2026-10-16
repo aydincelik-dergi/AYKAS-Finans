@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AYKAS CEP HESAP">
+<meta name="theme-color" content="#1976d2">
+
+<title>AYKAS CEP HESAP</title>
+</head>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fa;
+    color: #1f2937;
+}
+
+.app {
+    max-width: 500px;
+    margin: auto;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.header {
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    color: white;
+    padding: 22px 18px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header p {
+    margin: 6px 0 0;
+    opacity: .9;
+    font-size: 14px;
+}
+
+.content {
+    padding: 16px;
+    padding-bottom: 90px;
+}
+
+.balance-card {
+    background: #f8fafc;
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.balance-title {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.balance {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.summary-box {
+    padding: 16px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.income-box {
+    background: #e8f5e9;
+    color: #16803c;
+}
+
+.expense-box {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.summary-box span {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.summary-box strong {
+    font-size: 20px;
+}
+
+.quick-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 18px 0 12px;
+}
+
+.quick-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.quick-button {
+    border: none;
+    border-radius: 15px;
+    padding: 17px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.income-button {
+    background: #2e7d32;
+    color: white;
+}
+
+.expense-button {
+    background: #d32f2f;
+    color: white;
+}
+
+.category-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.category-button {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 13px;
+    padding: 15px 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    z-index: 10;
+}
+
+.nav-button {
+    border: none;
+    background: white;
+    padding: 12px 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.nav-button span {
+    display: block;
+    font-size: 21px;
+    margin-bottom: 3px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 20;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+}
+
+.modal-box h2 {
+    margin-top: 0;
+}
+
+.input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccd5df;
+    border-radius: 12px;
+    font-size: 17px;
+    margin-bottom: 12px;
+}
+
+.modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.save-button {
+    background: #1976d2;
+    color: white;
+}
+
+.cancel-button {
+    background: #e5e7eb;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 30px 10px;
+}
+
+.transaction {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-info strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.transaction-info small {
+    color: #64748b;
+}
+
+.transaction-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.transaction.income {
+    border-left: 5px solid #2e7d32;
+}
+
+.transaction.expense {
+    border-left: 5px solid #d32f2f;
+}
+
+.transaction-amount.income {
+    color: #2e7d32;
+}
+
+.transaction-amount.expense {
+    color: #d32f2f;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.delete-btn:active {
+    background: #fca5a5;
+}
+
+@media (max-width: 360px) {
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .balance {
+        font-size: 28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <h1>AYKAS CEP HESAP</h1>
+    <p>Basit • Hızlı • Pratik</p>
+</header>
+
+<div class="content">
+
+<!-- ANA SAYFA -->
+<section id="homePage" class="page active">
+
+    <div class="balance-card">
+        <div class="balance-title">Mevcut Bakiye</div>
+        <div class="balance" id="balance">0,00 ₺</div>
+    </div>
+
+    <div class="summary">
+
+        <div class="summary-box income-box">
+            <span>Toplam Gelir</span>
+            <strong id="totalIncome">0,00 ₺</strong>
+        </div>
+
+        <div class="summary-box expense-box">
+            <span>Toplam Gider</span>
+            <strong id="totalExpense">0,00 ₺</strong>
+        </div>
+
+    </div>
+
+    <div class="quick-title">Hızlı İşlem</div>
+
+    <div class="quick-buttons">
+        <button class="quick-button income-button"
+                onclick="openModal('income')">
+            Gelir Ekle
+        </button>
+
+        <button class="quick-button expense-button"
+                onclick="openModal('expense')">
+            Gider Ekle
+        </button>
+    </div>
+
+    <div class="quick-title">Hızlı Gider</div>
+
+    <div class="category-buttons">
+
+        <button class="category-button"
+                onclick="quickExpense('Market')">
+            Market
+        </button>
+
+        <button class="category-button"
+                onclick="quickExpense('Yakıt')">
+            Yakıt
+        </button>
+
+        <button class="category-button"
+                onclick="quickExpense('Yemek')">
+            Yemek
+        </button>
+
+        <button class="category-button"
+                onclick="quickExpense('Fatura')">
+            Fatura
+        </button>
+
+        <button class="category-button"
+                onclick="quickExpense('Ev')">
+            Ev
+        </button>
+
+        <button class="category-button"
+                onclick="quickExpense('Araç')">
+            Araç
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- HAREKETLER -->
+<section id="transactionsPage" class="page">
+
+    <h2>Hareketler</h2>
+
+    <div id="transactionList"></div>
+
+</section>
+
+
+<!-- AYLIK ÖZET -->
+<section id="summaryPage" class="page">
+
+    <h2>Aylık Özet</h2>
+
+    <div class="balance-card">
+        <div class="balance-title">Bu Ay</div>
+        <div class="balance" id="monthlyBalance">
+            0,00 ₺
+        </div>
+    </div>
+
+    <div class="summary">
+
+        <div class="summary-box income-box">
+            <span>Gelir</span>
+            <strong id="monthlyIncome">0,00 ₺</strong>
+        </div>
+
+        <div class="summary-box expense-box">
+            <span>Gider</span>
+            <strong id="monthlyExpense">0,00 ₺</strong>
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- ALT MENÜ -->
+
+<nav class="bottom-nav">
+
+    <button class="nav-button"
+            onclick="showPage('homePage')">
+        <span>🏠</span>
+        Ana Sayfa
+    </button>
+
+    <button class="nav-button"
+            onclick="openModal('income')">
+        <span>➕</span>
+        Gelir
+    </button>
+
+    <button class="nav-button"
+            onclick="openModal('expense')">
+        <span>➖</span>
+        Gider
+    </button>
+
+    <button class="nav-button"
+            onclick="showPage('transactionsPage')">
+        <span>📋</span>
+        Hareketler
+    </button>
+
+</nav>
+
+</div>
+
+
+<!-- KAYIT PENCERESİ -->
+
+<div class="modal" id="entryModal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">Kayıt</h2>
+
+        <input
+            class="input"
+            id="amountInput"
+            type="number"
+            inputmode="decimal"
+            placeholder="Tutar (₺)"
+        >
+
+        <input
+            class="input"
+            id="descriptionInput"
+            type="text"
+            placeholder="Açıklama"
+        >
+
+        <div class="modal-buttons">
+
+            <button class="cancel-button"
+                    onclick="closeModal()">
+                Vazgeç
+            </button>
+
+            <button class="save-button"
+                    onclick="saveTransaction()">
+                Kaydet
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let transactions =
+    JSON.parse(localStorage.getItem("aykasCepHesap")) || [];
+
+let currentType = "expense";
+
+
+function formatMoney(value) {
+
+    return Number(value).toLocaleString("tr-TR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }) + " ₺";
+
+}
+
+
+function saveData() {
+
+    localStorage.setItem(
+        "aykasCepHesap",
+        JSON.stringify(transactions)
+    );
+
+}
+
+
+function openModal(type) {
+
+    currentType = type;
+
+    document.getElementById("modalTitle").textContent =
+        type === "income"
+        ? "Gelir Ekle"
+        : "Gider Ekle";
+
+    document.getElementById("amountInput").value = "";
+    document.getElementById("descriptionInput").value = "";
+
+    document.getElementById("entryModal").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("amountInput").focus();
+    }, 100);
+
+}
+
+
+function closeModal() {
+
+    document.getElementById("entryModal").style.display = "none";
+
+}
+
+
+function saveTransaction() {
+
+    const amount =
+        parseFloat(
+            document.getElementById("amountInput").value
+        );
+
+    const description =
+        document.getElementById("descriptionInput").value.trim();
+
+    if (!amount || amount <= 0) {
+
+        alert("Lütfen geçerli bir tutar girin.");
+        return;
+
+    }
+
+    transactions.unshift({
+
+        type: currentType,
+        amount: amount,
+        description:
+            description ||
+            (currentType === "income"
+                ? "Gelir"
+                : "Gider"),
+
+        date: new Date().toISOString()
+
+    });
+
+    saveData();
+
+    closeModal();
+
+    updateApp();
+
+}
+
+
+function deleteTransaction(index) {
+
+    if (confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
+
+        transactions.splice(index, 1);
+
+        saveData();
+
+        updateApp();
+
+    }
+
+}
+
+
+function quickExpense(category) {
+
+    currentType = "expense";
+
+    document.getElementById("modalTitle").textContent =
+        category;
+
+    document.getElementById("amountInput").value = "";
+
+    document.getElementById("descriptionInput").value =
+        category;
+
+    document.getElementById("entryModal").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("amountInput").focus();
+    }, 100);
+
+}
+
+
+function updateApp() {
+
+    let income = 0;
+    let expense = 0;
+
+    transactions.forEach(item => {
+
+        if (item.type === "income") {
+
+            income += Number(item.amount);
+
+        } else {
+
+            expense += Number(item.amount);
+
+        }
+
+    });
+
+    const balance = income - expense;
+
+    document.getElementById("totalIncome").textContent =
+        formatMoney(income);
+
+    document.getElementById("totalExpense").textContent =
+        formatMoney(expense);
+
+    document.getElementById("balance").textContent =
+        formatMoney(balance);
+
+    updateTransactions();
+
+    updateMonthly();
+
+}
+
+
+function updateTransactions() {
+
+    const list =
+        document.getElementById("transactionList");
+
+    if (transactions.length === 0) {
+
+        list.innerHTML =
+            '<div class="empty">Henüz kayıt yok.</div>';
+
+        return;
+
+    }
+
+    list.innerHTML = "";
+
+    transactions.forEach((item, index) => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "transaction " + item.type;
+
+        const sign =
+            item.type === "income"
+            ? "+"
+            : "-";
+
+        const date =
+            new Date(item.date).toLocaleDateString("tr-TR");
+
+        div.innerHTML = `
+
+            <div class="transaction-info">
+
+                <strong>
+                    ${item.description}
+                </strong>
+
+                <small>
+                    ${date}
+                </small>
+
+            </div>
+
+            <div class="transaction-right">
+
+                <strong class="transaction-amount ${item.type}">
+                    ${sign}${formatMoney(item.amount)}
+                </strong>
+
+                <button class="delete-btn" onclick="deleteTransaction(${index})">
+                    Sil
+                </button>
+
+            </div>
+
+        `;
+
+        list.appendChild(div);
+
+    });
+
+}
+
+
+function updateMonthly() {
+
+    const now = new Date();
+
+    let income = 0;
+    let expense = 0;
+
+    transactions.forEach(item => {
+
+        const date =
+            new Date(item.date);
+
+        if (
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+        ) {
+
+            if (item.type === "income") {
+
+                income += Number(item.amount);
+
+            } else {
+
+                expense += Number(item.amount);
+
+            }
+
+        }
+
+    });
+
+    document.getElementById("monthlyIncome").textContent =
+        formatMoney(income);
+
+    document.getElementById("monthlyExpense").textContent =
+        formatMoney(expense);
+
+    document.getElementById("monthlyBalance").textContent =
+        formatMoney(income - expense);
+
+}
+
+
+function showPage(pageId) {
+
+    document.querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
+
+    document.getElementById(pageId)
+        .classList.add("active");
+
+    updateApp();
+
+}
+
+
+updateApp();
+
+</script>
+
+</body>
+</html>
